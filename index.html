@@ -165,6 +165,30 @@ header {
 </header>
 
 
+
+<!-- KEY BAR -->
+<div id="kBar" style="background:#1a1a2e;border-radius:14px;margin-bottom:18px;overflow:hidden;border:1.5px solid rgba(255,255,255,0.08);transition:border-color 0.3s;">
+  <div onclick="toggleKeyBar()" style="display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none;">
+    <span id="kDot" style="width:8px;height:8px;border-radius:50%;background:#c0392b;flex-shrink:0;transition:background 0.3s;"></span>
+    <span style="font-family:'Space Mono',monospace;font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:0.12em;text-transform:uppercase;">Gemini API Key</span>
+    <span id="kStatus" style="font-size:12px;color:#c0392b;flex:1;">⚠️ 请设置 Key</span>
+    <span id="kArrow" style="font-size:11px;color:rgba(255,255,255,0.3);">▼</span>
+  </div>
+  <div id="kBody" style="display:none;padding:0 14px 14px;gap:8px;flex-direction:column;">
+    <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:1.6;">
+      粘贴你的 Gemini API Key，点保存后自动记住，下次打开无需重新输入。<br>
+      <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#1a7a6e;text-decoration:none;">→ 免费获取 Key（aistudio.google.com）</a>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <input id="kInput" type="text" placeholder="AIzaSy..."
+        style="flex:1;height:38px;border-radius:9px;border:1px solid rgba(255,255,255,0.15);padding:0 12px;font-size:13px;font-family:monospace;background:rgba(255,255,255,0.07);color:#fff;outline:none;transition:border-color 0.2s;"
+        onfocus="if(this.value.includes('•')){this.value='';}"
+        onkeydown="if(event.key==='Enter')saveKey()"/>
+      <button onclick="saveKey()" style="height:38px;padding:0 16px;background:#1a7a6e;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;">保存</button>
+      <button onclick="clearKey()" style="height:38px;padding:0 12px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);border:none;border-radius:9px;font-size:13px;cursor:pointer;font-family:inherit;">清除</button>
+    </div>
+  </div>
+</div>
 <div class="loc-card" id="locCard">
   <div style="font-size:18px">📍</div>
   <div style="flex:1">
@@ -229,10 +253,55 @@ header {
 
 <script>
 // ── API KEY ──
-const GEMINI_KEY = 'AIzaSyC9fLmEBv67_XDXLGQJC2fSkb04_0-cd2I';
+let GEMINI_KEY = localStorage.getItem('gk') || '';
 
 function geminiURL() {
   return 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
+}
+
+function updateKeyStatus() {
+  const s = document.getElementById('kStatus');
+  const dot = document.getElementById('kDot');
+  if (!s) return;
+  if (GEMINI_KEY) {
+    s.textContent = '✅ 已连接'; s.style.color = '#1a7a6e';
+    dot.style.background = '#1a7a6e';
+  } else {
+    s.textContent = '⚠️ 请设置 Key'; s.style.color = '#c0392b';
+    dot.style.background = '#c0392b';
+  }
+}
+
+function saveKey() {
+  const inp = document.getElementById('kInput');
+  const val = inp.value.trim();
+  if (val.startsWith('AIza') && val.length > 20) {
+    GEMINI_KEY = val;
+    localStorage.setItem('gk', val);
+    inp.value = val.slice(0,8) + '••••••••••••••••••••••••••••';
+    updateKeyStatus();
+    document.getElementById('kBar').style.borderColor = '#1a7a6e';
+  } else {
+    inp.style.borderColor = '#c0392b';
+    setTimeout(() => inp.style.borderColor = '', 2000);
+    alert('格式错误，Key 应以 AIzaSy 开头');
+  }
+}
+
+function clearKey() {
+  GEMINI_KEY = '';
+  localStorage.removeItem('gk');
+  document.getElementById('kInput').value = '';
+  updateKeyStatus();
+  document.getElementById('kBar').style.borderColor = '';
+}
+
+function toggleKeyBar() {
+  const body = document.getElementById('kBody');
+  const arrow = document.getElementById('kArrow');
+  const expanded = body.style.display !== 'none';
+  body.style.display = expanded ? 'none' : 'flex';
+  arrow.textContent = expanded ? '▼' : '▲';
 }
 
 // ── SCENE DATA ──
@@ -531,6 +600,18 @@ function getLocation() {
 if('speechSynthesis' in window) window.speechSynthesis.getVoices();
 renderCats();
 renderScenes();
+window.addEventListener('load', () => {
+  updateKeyStatus();
+  if (GEMINI_KEY) {
+    const inp = document.getElementById('kInput');
+    if(inp) inp.value = GEMINI_KEY.slice(0,8) + '••••••••••••••••••••••••••••';
+    document.getElementById('kBar').style.borderColor = '#1a7a6e';
+  } else {
+    // Auto expand if no key
+    document.getElementById('kBody').style.display = 'flex';
+    document.getElementById('kArrow').textContent = '▲';
+  }
+});
 
 
 </script>
