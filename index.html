@@ -7,54 +7,56 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Space+Mono&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans JP',sans-serif;background:#f7f4ef;color:#1a1a2e;min-height:100vh}
-.wrap{max-width:800px;margin:0 auto;padding:0 16px 80px}
+body{font-family:'Noto Sans JP',sans-serif;background:#f7f4ef;color:#1a1a2e;min-height:100vh;transition: background 0.3s ease}
+.wrap{max-width:800px;margin:0 auto;padding:0 16px 80px;position: relative;}
 header{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;border-bottom:1px solid rgba(26,26,46,0.1);margin-bottom:20px;position:sticky;top:0;background:#f7f4ef;z-index:100}
 .logo-jp{font-size:19px;font-weight:700}
 .logo-en{font-family:'Space Mono',monospace;font-size:10px;color:#7a7a8c;letter-spacing:.1em;margin-left:8px}
-.geo-btn{font-size:12px;color:#7a7a8c;background:#edeae3;border-radius:20px;padding:6px 14px;border:1px solid rgba(26,26,46,0.1);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px}
-.gdot{width:7px;height:7px;border-radius:50%;background:#7a7a8c;flex-shrink:0}
+.geo-btn{font-size:12px;color:#7a7a8c;background:#edeae3;border-radius:20px;padding:6px 14px;border:1px solid rgba(26,26,46,0.1);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition: all 0.2s ease;}
+.geo-btn:hover{background: #e2ded4; transform: translateY(-1px);}
+.gdot{width:7px;height:7px;border-radius:50%;background:#7a7a8c;flex-shrink:0;transition: all 0.3s ease;}
 .gdot.on{background:#1a7a6e;box-shadow:0 0 0 3px rgba(26,122,110,0.15)}
 
 /* KEY BAR */
-.key-bar{background:#fff;border:1.5px solid rgba(26,26,46,0.12);border-radius:14px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.key-bar{background:#fff;border:1.5px solid rgba(26,26,46,0.12);border-radius:14px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02)}
 .key-bar label{font-size:11px;font-family:'Space Mono',monospace;color:#7a7a8c;letter-spacing:.1em;white-space:nowrap}
-.key-bar input{flex:1;min-width:200px;height:38px;border-radius:9px;border:1px solid rgba(26,26,46,0.12);padding:0 12px;font-size:13px;font-family:monospace;background:#f7f4ef;color:#1a1a2e;outline:none;transition:border-color .2s}
-.key-bar input:focus{border-color:#1a7a6e}
+.key-bar input{flex:1;min-width:200px;height:38px;border-radius:9px;border:1px solid rgba(26,26,46,0.12);padding:0 12px;font-size:13px;font-family:monospace;background:#f7f4ef;color:#1a1a2e;outline:none;transition:all .2s}
+.key-bar input:focus{border-color:#1a7a6e; background: #fff;}
 .key-bar input::placeholder{color:#bbb}
-.btn-save{height:38px;padding:0 18px;background:#1a1a2e;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .2s}
-.btn-save:hover{background:#1a7a6e}
-.key-status{font-size:12px;white-space:nowrap}
+.btn-save{height:38px;padding:0 18px;background:#1a1a2e;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s}
+.btn-save:hover{background:#1a7a6e; transform: translateY(-1px);}
+.key-status{font-size:12px;white-space:nowrap; font-weight: 500;}
 
 /* LOC CARD */
-.loc-card{background:#e0f5f3;border:1px solid rgba(26,122,110,0.2);border-radius:12px;padding:12px 16px;margin-bottom:18px;display:none;align-items:center;gap:12px}
+.loc-card{background:#e0f5f3;border:1px solid rgba(26,122,110,0.2);border-radius:12px;padding:12px 16px;margin-bottom:18px;display:none;align-items:center;gap:12px;animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;}
 .loc-card.show{display:flex}
 .loc-name{font-size:14px;font-weight:500;color:#1a7a6e}
 .loc-hint{font-size:12px;color:#7a7a8c;margin-top:2px}
-.loc-use{font-size:12px;padding:6px 14px;background:#1a7a6e;color:#fff;border:none;border-radius:20px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.loc-use{font-size:12px;padding:6px 14px;background:#1a7a6e;color:#fff;border:none;border-radius:20px;cursor:pointer;font-family:inherit;white-space:nowrap;transition: background 0.2s;}
+.loc-use:hover{background: #135d54}
 
 /* KW ROW */
 .sec-lbl{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;color:#7a7a8c;text-transform:uppercase;margin-bottom:10px}
 .kw-row{display:flex;gap:8px;margin-bottom:18px}
-.kw-row input{flex:1;height:42px;border-radius:12px;padding:0 14px;border:1px solid rgba(26,26,46,0.1);background:#fff;font-size:13px;font-family:inherit;color:#1a1a2e;outline:none;transition:border-color .2s}
-.kw-row input:focus{border-color:#1a7a6e}
+.kw-row input{flex:1;height:42px;border-radius:12px;padding:0 14px;border:1px solid rgba(26,26,46,0.1);background:#fff;font-size:13px;font-family:inherit;color:#1a1a2e;outline:none;transition:all .2s;box-shadow: 0 2px 4px rgba(0,0,0,0.01)}
+.kw-row input:focus{border-color:#1a7a6e;box-shadow: 0 0 0 3px rgba(26,122,110,0.08)}
 .kw-row input::placeholder{color:#bbb}
-.btn-gen{height:42px;padding:0 18px;background:#1a1a2e;color:#f7f4ef;border:none;border-radius:12px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;white-space:nowrap;transition:background .2s}
-.btn-gen:hover{background:#2d2d4e}
+.btn-gen{height:42px;padding:0 18px;background:#1a1a2e;color:#f7f4ef;border:none;border-radius:12px;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .2s}
+.btn-gen:hover{background:#2d2d4e; transform: translateY(-1px);}
 .btn-gen:disabled{opacity:.45;cursor:not-allowed}
 
 /* CATS */
 .cat-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .cat-tab{font-size:12px;padding:7px 14px;border-radius:20px;border:1px solid rgba(26,26,46,0.1);background:#fff;color:#1a1a2e;cursor:pointer;font-family:inherit;font-weight:500;transition:all .15s;display:flex;align-items:center;gap:4px}
-.cat-tab:hover{border-color:#1a1a2e}
+.cat-tab:hover{border-color:#1a1a2e; transform: translateY(-1px);}
 .cat-tab.active{background:#1a1a2e;color:#f7f4ef;border-color:#1a1a2e}
 .cat-tab.ti-tab{background:linear-gradient(135deg,#1a1a2e,#2d1a4e);color:#f0c040;border-color:#3d2a6e;font-weight:700}
 .cat-tab.ti-tab.active{background:#f0c040;color:#1a1a2e;border-color:#f0c040}
 
 /* SCENE GRID */
 .scene-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:20px}
-.scene-card{background:#fff;border:1px solid rgba(26,26,46,0.1);border-radius:12px;padding:12px 13px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:4px}
-.scene-card:hover{border-color:rgba(26,26,46,0.25);background:#edeae3}
+.scene-card{background:#fff;border:1px solid rgba(26,26,46,0.1);border-radius:12px;padding:12px 13px;cursor:pointer;transition:all .2s ease;display:flex;flex-direction:column;gap:4px;box-shadow: 0 2px 4px rgba(0,0,0,0.01)}
+.scene-card:hover{border-color:rgba(26,26,46,0.25);background:#edeae3;transform: translateY(-2px);box-shadow: 0 4px 8px rgba(0,0,0,0.04)}
 .scene-card.active{border:1.5px solid #1a7a6e;background:#e0f5f3}
 .sc-icon{font-size:20px;margin-bottom:2px}
 .sc-name{font-size:12px;font-weight:500;line-height:1.3}
@@ -72,27 +74,27 @@ header{display:flex;align-items:center;justify-content:space-between;padding:20p
 .toggle{display:flex;align-items:center;gap:5px;font-size:12px;padding:6px 13px;border:1px solid rgba(26,26,46,0.1);border-radius:20px;cursor:pointer;background:#fff;color:#7a7a8c;transition:all .15s;user-select:none}
 .toggle.on{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
 .toggle .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
-.lvl-sel{font-size:12px;padding:6px 12px;border:1px solid rgba(26,26,46,0.1);border-radius:20px;background:#fff;color:#1a1a2e;font-family:inherit;cursor:pointer;appearance:none}
+.lvl-sel{font-size:12px;padding:6px 12px;border:1px solid rgba(26,26,46,0.1);border-radius:20px;background:#fff;color:#1a1a2e;font-family:inherit;cursor:pointer;appearance:none;outline:none;}
 
 /* CHAT */
-.chat-box{background:#fff;border:1px solid rgba(26,26,46,0.1);border-radius:18px;overflow:hidden}
+.chat-box{background:#fff;border:1px solid rgba(26,26,46,0.1);border-radius:18px;overflow:hidden;box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05)}
 .chat-head{background:#1a1a2e;padding:13px 18px;display:flex;align-items:center;justify-content:space-between}
 .ch-av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
 .ch-title{font-size:13px;font-weight:500;color:#fff}
 .ch-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-top:1px}
-.reset-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
-.reset-btn:hover{background:rgba(255,255,255,0.2)}
-.msgs{padding:18px 16px;min-height:320px;max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.reset-btn{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition: all 0.2s;}
+.reset-btn:hover{background:rgba(255,255,255,0.2);transform:rotate(-45deg)}
+.msgs{padding:18px 16px;min-height:320px;max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;scroll-behavior: smooth;}
 .msgs::-webkit-scrollbar{width:3px}
 .msgs::-webkit-scrollbar-thumb{background:rgba(26,26,46,0.1);border-radius:3px}
-.msg-row{display:flex;gap:8px}
+.msg-row{display:flex;gap:8px;animation: fadeIn 0.3s ease-out forwards;}
 .msg-row.user{flex-direction:row-reverse}
 .msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
 .msg-row.ai .msg-av{background:#1a1a2e;color:#fff}
 .msg-row.user .msg-av{background:#fde8e6;color:#c0392b}
 .msg-body{max-width:75%;display:flex;flex-direction:column;gap:4px}
 .msg-row.user .msg-body{align-items:flex-end}
-.bubble{border-radius:4px 14px 14px 14px;padding:10px 13px;border:1px solid rgba(26,26,46,0.1)}
+.bubble{border-radius:4px 14px 14px 14px;padding:10px 13px;border:1px solid rgba(26,26,46,0.1);white-space: pre-wrap;word-break: break-all;}
 .msg-row.ai .bubble{background:#f7f4ef}
 .msg-row.user .bubble{background:#1a1a2e;color:#fff;border-radius:14px 4px 14px 14px;border-color:#1a1a2e}
 .rm-line{font-family:'Space Mono',monospace;font-size:10px;color:#7a7a8c;margin-bottom:3px;line-height:1.5}
@@ -109,18 +111,18 @@ header{display:flex;align-items:center;justify-content:space-between;padding:20p
 @keyframes pulse{0%,80%,100%{transform:scale(.7);opacity:.4}40%{transform:scale(1);opacity:1}}
 .qr-area{padding:0 16px 10px;display:flex;flex-wrap:wrap;gap:6px}
 .qr{font-size:12px;padding:6px 13px;border-radius:20px;border:1px solid rgba(26,26,46,0.1);background:#fff;color:#1a1a2e;cursor:pointer;font-family:inherit;transition:all .15s}
-.qr:hover{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+.qr:hover{background:#1a1a2e;color:#fff;border-color:#1a1a2e;transform: translateY(-1px);}
 .input-area{padding:10px 14px;border-top:1px solid rgba(26,26,46,0.1);display:flex;gap:8px;align-items:flex-end;background:#edeae3}
 .input-area textarea{flex:1;min-height:40px;max-height:110px;padding:9px 13px;border:1px solid rgba(26,26,46,0.1);border-radius:12px;background:#fff;font-size:13px;font-family:inherit;color:#1a1a2e;resize:none;line-height:1.5;outline:none;transition:border-color .2s}
 .input-area textarea:focus{border-color:#1a7a6e}
 .input-area textarea::placeholder{color:#bbb}
-.send-btn{width:40px;height:40px;border-radius:50%;background:#1a1a2e;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;transition:background .2s}
-.send-btn:hover{background:#1a7a6e}
-.send-btn:disabled{opacity:.4;cursor:not-allowed}
+.send-btn{width:40px;height:40px;border-radius:50%;background:#1a1a2e;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;transition:all .2s}
+.send-btn:hover{background:#1a7a6e;transform: scale(1.05);}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;transform: none;}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:50px 20px;color:#7a7a8c;text-align:center}
 .empty .em{font-size:36px;opacity:.2}
 .empty p{font-size:13px;line-height:1.7}
-.vocab-panel{margin-top:14px;background:#fff;border:1px solid rgba(26,26,46,0.1);border-radius:18px;overflow:hidden;display:none}
+.vocab-panel{margin-top:14px;background:#fff;border:1px solid rgba(26,26,46,0.1);border-radius:18px;overflow:hidden;display:none;animation: fadeIn 0.3s ease-out;}
 .vocab-panel.show{display:block}
 .vocab-head{padding:10px 16px;border-bottom:1px solid rgba(26,26,46,0.1);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:#7a7a8c;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
 .vocab-list{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
@@ -128,13 +130,31 @@ header{display:flex;align-items:center;justify-content:space-between;padding:20p
 .v-jp{font-size:15px;font-weight:500;min-width:70px}
 .v-rm{font-family:'Space Mono',monospace;font-size:10px;color:#7a7a8c;min-width:80px}
 .v-zh{font-size:12px;flex:1}
-.v-tts{margin-left:auto;background:none;border:1px solid rgba(26,26,46,0.1);border-radius:20px;padding:3px 10px;font-size:11px;color:#7a7a8c;cursor:pointer;font-family:inherit;white-space:nowrap}
+.v-tts{margin-left:auto;background:none;border:1px solid rgba(26,26,46,0.1);border-radius:20px;padding:3px 10px;font-size:11px;color:#7a7a8c;cursor:pointer;font-family:inherit;white-space:nowrap;transition: all 0.2s;}
 .v-tts:hover{border-color:#1a7a6e;color:#1a7a6e}
-@media(max-width:500px){.scene-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.msgs{max-height:350px}}
+
+/* CUSTOM HIGH-END TOAST MODAL */
+.toast-container {position: fixed; top: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 350px; width: calc(100% - 48px);}
+.toast {background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(26, 26, 46, 0.08); padding: 14px 18px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; align-items: flex-start; gap: 10px; transform: translateX(120%); opacity: 0; transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: auto;}
+.toast.show {transform: translateX(0); opacity: 1;}
+.toast-icon {font-size: 16px; line-height: 1;}
+.toast-content {flex: 1;}
+.toast-title {font-weight: 700; font-size: 12px; color: #1a1a2e; margin-bottom: 2px;}
+.toast-desc {font-size: 11px; color: #7a7a8c; line-height: 1.4;}
+.toast.success {border-left: 4px solid #1a7a6e;}
+.toast.error {border-left: 4px solid #c0392b;}
+.toast.info {border-left: 4px solid #3b82f6;}
+
+@keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media(max-width:500px){.scene-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.msgs{max-height:350px}.toast-container { right: 24px; top: auto; bottom: 24px; }}
 </style>
 </head>
 <body>
 <div class="wrap">
+
+<!-- Dynamic Toast Anchor -->
+<div class="toast-container" id="toastContainer"></div>
 
 <header>
   <div>
@@ -222,9 +242,33 @@ header{display:flex;align-items:center;justify-content:space-between;padding:20p
 
 </div>
 <script>
+// ── TOAST NOTIFICATION SYSTEM ──
+function showToast(title, desc, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  toast.innerHTML = `
+    <div class="toast-icon">${icons[type]}</div>
+    <div class="toast-content">
+      <div class="toast-title">${title}</div>
+      <div class="toast-desc">${desc}</div>
+    </div>
+  `;
+  container.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 50);
+
+  // Auto remove toast after 4 seconds
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 400);
+  }, 4000);
+}
+
 // ── KEY ──
 let GK = localStorage.getItem('gk') || '';
-// 备选模型列表，用于智能兼容各个版本的 API Key
+// 备选模型列表，用于智能兼容各种情况下的 API Key 访问权限
 const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash-preview-09-2025'];
 
 function gurl(model = 'gemini-2.5-flash'){ return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=`+GK; }
@@ -235,9 +279,9 @@ function initKeyUI(){
 }
 function saveKey(){
   const v=document.getElementById('kInput').value.trim();
-  if(v.startsWith('AIza')&&v.length>30){ GK=v; localStorage.setItem('gk',v); initKeyUI(); }
-  else if(v.includes('•')){ alert('已保存，无需重复输入'); }
-  else { alert('格式错误，Key 应以 AIzaSy 开头'); }
+  if(v.startsWith('AIza')&&v.length>30){ GK=v; localStorage.setItem('gk',v); initKeyUI(); showToast('保存成功', 'API Key 已经保存在本地，准备开始练习！', 'success'); }
+  else if(v.includes('•')){ showToast('提示', '已保存，无需重复输入', 'info'); }
+  else { showToast('格式错误', 'API Key 应以 AIzaSy 开头并长于 30 个字符', 'error'); }
 }
 
 // ── SCENES ──
@@ -254,13 +298,13 @@ const CATS=[
   ]},
   {id:'transport',label:'交通出行',icon:'🚃',scenes:[
     {id:'station',icon:'🚉',name:'駅・切符',sub:'乗り換え・路線案内',av:'駅',role:'駅員',ctx:'乗り換え案内、切符購入、ICカードチャージ、忘れ物'},
-    {id:'taxi',icon:'🚕',name:'タクシー',sub:'行先・料金',av:'車',role:'タクシー運転手',ctx:'行き先を聞く、ルート确认、料金説明、おつり'},
+    {id:'taxi',icon:'🚕',name:'タクシー',sub:'行先・料金',av:'車',role:'タクシー運転手',ctx:'行き先を聞く、ルート確認、料金説明、おつり'},
     {id:'bus',icon:'🚌',name:'バス',sub:'路線・停留所確認',av:'BUS',role:'バス運転手',ctx:'停留所の案内、料金、乗り継ぎの説明'},
-    {id:'airport',icon:'✈️',name:'空港',sub:'チェックイン・案内',av:'空',role:'空港スタッフ',ctx:'チェックイン、手荷物预け、搭乗口案内'},
-    {id:'rental',icon:'🚗',name:'レンタカー',sub:'車の貸出・返却',av:'RC',role:'レンタカー店員',ctx:'車種説明、保险確認、燃料説明、返却手続き'},
+    {id:'airport',icon:'✈️',name:'空港',sub:'チェックイン・案内',av:'空',role:'空港スタッフ',ctx:'チェックイン、手荷物預け、搭乗口案内'},
+    {id:'rental',icon:'🚗',name:'レンタカー',sub:'車の貸出・返却',av:'RC',role:'レンタカー店員',ctx:'車種説明、保険確認、燃料説明、返却手続き'},
   ]},
   {id:'public',label:'公共服务',icon:'🏛️',scenes:[
-    {id:'bank',icon:'🏦',name:'銀行',sub:'口座・電話確認',av:'銀',role:'銀行員',ctx:'口座開設、カード申込後の電話確認、在留資格確認'},
+    {id:'bank',icon:'🏦',name:'銀行',sub:'口座・電話確認',av:'銀',role:'銀行員',ctx:'口座開設、カード申込後の电话確認、在留資格確認'},
     {id:'post',icon:'📮',name:'郵便局',sub:'荷物・海外送金',av:'郵',role:'郵便局員',ctx:'荷物の発送、国際郵便、料金説明、転送届'},
     {id:'hospital',icon:'🏥',name:'病院',sub:'受付・診察',av:'医',role:'病院の受付',ctx:'症状を聞く、保険証確認、診察順番、処方箋説明'},
     {id:'cityhall',icon:'🏢',name:'市役所',sub:'住民登録・手続き',av:'役',role:'市役所の窓口担当',ctx:'住民票、在留カード更新、マイナンバー、各種証明書'},
@@ -274,9 +318,9 @@ const CATS=[
     {id:'gas',icon:'🔥',name:'ガス・電気',sub:'開栓・契約変更',av:'GS',role:'ガス会社担当',ctx:'開栓工事の説明、料金プラン、引越し時の手続き'},
   ]},
   {id:'work',label:'职场工作',icon:'💼',scenes:[
-    {id:'interview',icon:'🤝',name:'バイト面接',sub:'自己紹介・志望动機',av:'面',role:'カフェの店长',ctx:'アルバイト面接、自己紹介、シフト確認、志望動機'},
-    {id:'fulltime',icon:'👔',name:'就活面接',sub:'新卒・転職面接',av:'就',role:'人事担当者',ctx:'日系企業の正社員面接、志望動機、自己PR、日本語力確認'},
-    {id:'office',icon:'💻',name:'オフィス',sub:'同僚・上司との会話',av:'社',role:'日本人の同僚',ctx:'業務の質問、会議の調整、敬語の使い方、飲み会の誘い'},
+    {id:'interview',icon:'🤝',name:'バイト面接',sub:'自己紹介・志望動機',av:'面',role:'カフェの店長',ctx:'アルバイト面接、自己紹介、シフト確認、志望動机'},
+    {id:'fulltime',icon:'👔',name:'就活面接',sub:'新卒・転職面接',av:'就',role:'人事担当者',ctx:'日系企業の正社員面接、志望動机、自己PR、日本語力確認'},
+    {id:'office',icon:'💻',name:'オフィス',sub:'同僚・上司との会話',av:'社',role:'日本人の同僚',ctx:'業務の質問、会議の調整、敬语の使い方、飲み会の誘い'},
     {id:'meeting',icon:'📊',name:'会議・報告',sub:'プレゼン・議事録',av:'議',role:'会議の司会',ctx:'会議進行、意見を求める、議事録確認、プレゼン発表'},
     {id:'phone',icon:'📞',name:'電話対応',sub:'ビジネス電話・敬語',av:'電',role:'会社の受付',ctx:'ビジネス電話の受け方、取り次ぎ、伝言、折り返し依頼'},
     {id:'email',icon:'📧',name:'メール文章',sub:'敬語メール添削',av:'ML',role:'日本語の先生',ctx:'ビジネスメールの書き方を指導、敬語の訂正'},
@@ -292,25 +336,25 @@ const CATS=[
     {id:'karaoke',icon:'🎤',name:'カラオケ',sub:'部屋・延長・注文',av:'KR',role:'カラオケ店員',ctx:'部屋の予約、延長手続き、フード注文、機器の使い方'},
     {id:'gym',icon:'💪',name:'ジム',sub:'入会・トレーニング',av:'GY',role:'ジムのスタッフ',ctx:'入会手続き、施設説明、トレーニング機器の使い方、月会費'},
     {id:'travel',icon:'🗺️',name:'観光案内',sub:'名所・道案内',av:'観',role:'観光案内スタッフ',ctx:'観光スポット紹介、交通手段、おすすめグルメ'},
-    {id:'shopping',icon:'👗',name:'ショッピング',sub:'試着・サイズ確認',av:'SP',role:'アパレル店员',ctx:'サイズ案内、試着室、在庫確認、セール説明、会員カード'},
+    {id:'shopping',icon:'👗',name:'ショッピング',sub:'試着・サイズ确认',av:'SP',role:'アパレル店員',ctx:'サイズ案内、試着室、在庫確認、セール説明、会員カード'},
     {id:'cinema',icon:'🎬',name:'映画館',sub:'チケット・座席',av:'映',role:'映画館スタッフ',ctx:'チケット購入、座席案内、ポップコーン注文、上映時間'},
   ]},
   {id:'techinterview',label:'⚡ 技術面接',icon:'⚡',scenes:[
-    {id:'ti_general',icon:'🤝',name:'面接・基本',sub:'自己紹介・志望动機',av:'面',_g:'bg',role:'日系メーカーの人事担当者',ctx:'技術系職種の一次面接。自己紹介、技術背景、志望動機、強み弱み、キャリアビジョンを順に質問し深掘りする。重要語彙：志望動機、自己PR、強み、即戦力'},
-    {id:'ti_tech_qa',icon:'💬',name:'技術質疑応答',sub:'プロジェクト経験深掘り',av:'技',_g:'bg',role:'技術部門 of シニアエンジニア',ctx:'過去の設計・開発経験をSTARメソッドで深掘りする。「技術的に難しかったプロジェクトは？」「チームでの役割は？」'},
+    {id:'ti_general',icon:'🤝',name:'面接・基本',sub:'自己紹介・志望動機',av:'面',_g:'bg',role:'日系メーカーの人事担当者',ctx:'技術系職種の一次面接。自己紹介、技術背景、志望動机、強み弱み、キャリアビジョンを順に質問し深掘りする。重要語彙：志望動機、自己PR、強み、即戦力'},
+    {id:'ti_tech_qa',icon:'💬',name:'技術質疑応答',sub:'プロジェクト経験深掘り',av:'技',_g:'bg',role:'技術部門 of シニアエンジニア',ctx:'過去の設計・开发経験をSTARメソッドで深掘りする。「技術的に難しかったプロジェクトは？」「チームでの役割は？」'},
     {id:'ti_salary',icon:'💴',name:'条件確認・交渉',sub:'給与・勤務条件',av:'条',_g:'bg',role:'人事担当者（条件面談）',ctx:'内定後の条件面談。給与提示、残業規定、有給、入社日調整。重要語彙：年収、基本給、残業手当、試用期間'},
     {id:'ti_elec_gen',icon:'⚡',name:'電気エンジニア',sub:'回路・制御・シーケンス',av:'電',_g:'be',role:'電気設計部門のリードエンジニア',ctx:'シーケンス制御(PLC・ラダー図)、電気回路設計、制御盤設計、JIS規格図面、安全規格(IEC・CE・UL)を質問する'},
-    {id:'ti_elec_hv',icon:'🔌',name:'高圧・受変電',sub:'高圧設備・变电所',av:'高',_g:'be',role:'高圧電気設備の技術部長',ctx:'高圧受電設備(キュービクル・VCB・変圧器)、保護継電器整定、電気主任技術者資格を確認する。重要語彙：受電、変圧器、遮断器、力率、地絡'},
+    {id:'ti_elec_hv',icon:'🔌',name:'高圧・受変電',sub:'高圧設備・変電所',av:'高',_g:'be',role:'高圧電気設備の技術部長',ctx:'高圧受电設備(キュービクル・VCB・変圧器)、保護継電器整定、電気主任技術者資格を確認する。重要語彙：受電、変圧器、遮断器、力率、地絡'},
     {id:'ti_elec_auto',icon:'🤖',name:'制御・自動化',sub:'PLC・FA・ロボット',av:'FA',_g:'be',role:'FAシステム部門の技術面接官',ctx:'PLC(三菱・OMRON・Siemens)、インバータ、サーボ、産業用ロボット、PROFIBUS・EtherNet/IP通信規格を質問する'},
     {id:'ti_solar',icon:'☀️',name:'太陽光発電',sub:'PV・蓄電・系統連系',av:'PV',_g:'bn',role:'再生可能エネルギー企業の技術面接官',ctx:'PVシステム設計(パワコン・架台・ストリング)、系統連系規程、蓄電池、発電量シミュレーション、O&Mを質問する'},
     {id:'ti_wind',icon:'🌬️',name:'風力・再エネ',sub:'風力発電・電力系統',av:'WT',_g:'bn',role:'エネルギー会社の採用担当エンジニア',ctx:'風力発電機の構造・制御、電力系統連系、エネルギーシミュレーション、洋上風力の特有課題を質問する'},
     {id:'ti_energy_mgr',icon:'🏭',name:'エネルギー管理',sub:'省エネ・BEMS・設備',av:'EM',_g:'bn',role:'エネルギーマネジメント企業の面接官',ctx:'省エネ法・エネルギー管理士、BEMS/FEMS設計、CO2削減計画、電力デマンド管理を質問する'},
-    {id:'ti_battery',icon:'🔋',name:'蓄電池・EV',sub:'リチウム電池・BMS',av:'EV',_g:'bn',role:'EV・蓄電池メーカーの技術面接官',ctx:'リチウムイオン電池の原理・劣化、BMS設計、SOC/SOH推定、EV充电インフラ(CHAdeMO・CCS)、熱管理を質問する'},
+    {id:'ti_battery',icon:'🔋',name:'蓄電池・EV',sub:'リチウム電池・BMS',av:'EV',_g:'bn',role:'EV・蓄電池メーカーの技術面接官',ctx:'リチウムイオン電池の原理・劣化、BMS设计、SOC/SOH推定、EV充电インフラ(CHAdeMO・CCS)、熱管理を質問する'},
     {id:'ti_eplan',icon:'🖥️',name:'EPLAN設計',sub:'EPLAN Electric・回路図',av:'EP',_g:'bs',role:'EPLAN認定エンジニア・電気設計部門の面接官',ctx:'EPLAN Electric P8操作、部品マスタ、PLC設計、自動レポート生成、EPLAN Pro Panel(3Dパネル)を質問する'},
     {id:'ti_autocad',icon:'📐',name:'AutoCAD電気設計',sub:'図面管理・JIS規格',av:'CAD',_g:'bs',role:'設計部門のリーダーエンジニア',ctx:'AutoCAD Electrical操作、JIS規格電気記号、単線図・複線図、図面管理・版数管理を質問する'},
     {id:'ti_spice',icon:'📊',name:'回路シミュレーション',sub:'SPICE・LTspice',av:'SIM',_g:'bs',role:'アナログ回路設計部門の技術面接官',ctx:'LTspice・PSPICEの使用経験、アナログ回路設計、ボード線図を用いた安定性解析を質問する'},
-    {id:'ti_scada',icon:'🖥️',name:'SCADA・HMI設計',sub:'監視制御・データ収集',av:'SC',_g:'bs',role:'制御システムインテグレーターの面接官',ctx:'SCADAソフト(Wonderware・iFIX)、HMI画面設計、OPC-UA・Modbus通信、冗長化を質問する'},
-    {id:'ti_bim',icon:'🏗️',name:'BIM・電気設備設計',sub:'Revit MEP・設備BIM',av:'BIM',_g:'bs',role:'設備設計事務所の技術面接官',ctx:'Revit MEP操作、電気设备設計(照明・動力・弱電)、BIM干渉チェック、建築・設備の連携フローを質問する'},
+    {id:'ti_scada',icon:'🖥️',name:'SCADA・HMI設計',sub:'監視制御・データ収集',av:'SC',_g:'bs',role:'制御システムインテグレーターの面接官',ctx:'SCADAソフト(Wonderware・iFIX)、HMI画面設計、OPC-UA・Modbus通信、冗长化を質問する'},
+    {id:'ti_bim',icon:'🏗️',name:'BIM・電気設備設計',sub:'Revit MEP・設備BIM',av:'BIM',_g:'bs',role:'設備設計事務所の技術面接官',ctx:'Revit MEP操作、電気設備設計(照明・動力・弱電)、BIM干渉チェック、建築・設備の連携フローを質問する'},
   ]},
   {id:'emergency',label:'紧急情况',icon:'🆘',scenes:[
     {id:'lost',icon:'🔍',name:'道に迷った',sub:'道案内・Google Map',av:'迷',role:'通りすがりの人',ctx:'道に迷った時の助けを求める、地図を見ながら説明、目印の説明'},
@@ -365,14 +409,19 @@ function renderScenes(){
   }
 }
 function selScene(id){
-  if(S.loading) return; // 频率安全锁：如果正在请求中，禁止频繁切换
+  if(S.loading) return; // 频率安全锁
   const sc=ALL[id];if(!sc)return;
   S.scene=sc;S.msgs=[];
   renderScenes();
   document.getElementById('chAv').textContent=sc.av;
   document.getElementById('chTitle').textContent=sc.name+' — '+sc.sub;
   document.getElementById('chSub').textContent=sc.role+'があなたと会話します';
-  clearChat();setTimeout(startConv,250);
+  clearChat();
+  setTimeout(() => {
+    startConv();
+    // 聚焦输入框提高交互效率
+    document.getElementById('userInput').focus();
+  }, 250);
 }
 function clearChat(){
   document.getElementById('msgs').innerHTML='';
@@ -422,7 +471,7 @@ function addErrorMsg(title, detail) {
   d.className = 'msg-row ai';
   d.innerHTML = `
     <div class="msg-av">⚠️</div>
-    <div class="msg-body">
+    <div class="msg-body" style="width: 100%;">
       <div class="bubble" style="background: #fdf2f2; border: 1.5px solid #fca5a5; color: #991b1b; border-radius: 4px 14px 14px 14px; padding: 12px 14px; width: 100%;">
         <div style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">${esc(title)}</div>
         <div style="font-size: 12px; line-height: 1.5; color: #7f1d1d;">${esc(detail)}</div>
@@ -433,14 +482,14 @@ function addErrorMsg(title, detail) {
   area.scrollTop = area.scrollHeight;
 }
 
-// ── 核心 API 请求引擎 ──
-async function callAI(msgs, isCustomSceneGen = false){
+// ── 核心 API 请求引擎（多模态 Schema 融合版） ──
+async function callAI(msgs, mode = 'chat'){
   if(!GK){
     addErrorMsg('APIキーが未設定です', '页面顶部的「GEMINI API KEY」处尚未配置有效的 API Key，请设置并保存后再试。');
     return null;
   }
 
-  // 将 Schema 中的类型全部修复为官方标准小写 "object", "string", "array"
+  // 1. 聊天对话所对应的数据规范 Schema
   const chatSchema = {
     type: "object",
     properties: {
@@ -468,6 +517,7 @@ async function callAI(msgs, isCustomSceneGen = false){
     required: ["jp", "zh", "romaji", "words", "suggestions"]
   };
 
+  // 2. 自定义场景生成所对应的数据规范 Schema
   const sceneSchema = {
     type: "object",
     properties: {
@@ -482,17 +532,32 @@ async function callAI(msgs, isCustomSceneGen = false){
     required: ["id", "icon", "name", "sub", "av", "role", "ctx"]
   };
 
+  // 3. 智能 GPS 匹配推荐 Schema
+  const locationSchema = {
+    type: "object",
+    properties: {
+      placeName: { type: "string", description: "推測場所名（日本語）" },
+      sceneId: { type: "string", description: "conbini/supermart/restaurant/izakaya/cafe/pharmacy/bank/post/hospital/station/taxi/airport/realestate/delivery/interview/office/hotel/shopping/lost/sick/other" },
+      hint: { type: "string", description: "简短说明（中文15字以内）" }
+    },
+    required: ["placeName", "sceneId", "hint"]
+  };
+
+  let activeSchema = chatSchema;
+  if (mode === 'scene') activeSchema = sceneSchema;
+  if (mode === 'location') activeSchema = locationSchema;
+
   const body = {
     contents: msgs,
     generationConfig: {
-      temperature: isCustomSceneGen ? 0.75 : 0.85,
-      maxOutputTokens: isCustomSceneGen ? 512 : 1024,
+      temperature: mode === 'chat' ? 0.85 : 0.65,
+      maxOutputTokens: mode === 'chat' ? 1024 : 384,
       responseMimeType: "application/json",
-      responseSchema: isCustomSceneGen ? sceneSchema : chatSchema
+      responseSchema: activeSchema
     }
   };
 
-  if (!isCustomSceneGen) {
+  if (mode === 'chat') {
     body.system_instruction = { role: 'system', parts: [{ text: sysP() }] };
   }
 
@@ -544,7 +609,7 @@ async function callAI(msgs, isCustomSceneGen = false){
       return d.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
     } catch (e) {
       lastError = e.message;
-      // 如果属于非降级类错误（如断网），直接抛出
+      // 如果属于非降级类错误（如网络断开），直接抛出
       if (e.message.includes('API') || e.message.includes('Failed to fetch')) {
         throw e;
       }
@@ -571,7 +636,7 @@ async function startConv(){
   }
 
   try{
-    const txt=await callAI([{role:'user',parts:[{text:'会話を始めてください。役になりきって最初の声かけをしてください。'}]}]);
+    const txt=await callAI([{role:'user',parts:[{text:'会話を始めてください。役になりきって最初の声かけをしてください。'}]}], 'chat');
     removeTyping();S.loading=false;
     if(txt){const d=parse(txt);addAI(d);S.msgs.push({role:'model',parts:[{text:txt}]});}
   }catch(e){
@@ -602,7 +667,7 @@ async function sendMsg(){
     let start=0;
     while(start<hist.length&&hist[start].role!=='user')start++;
     const validHist=hist.slice(start);
-    const txt=await callAI(validHist);
+    const txt=await callAI(validHist, 'chat');
     removeTyping();S.loading=false;document.getElementById('sendBtn').disabled=false;
     if(txt){const d=parse(txt);addAI(d);S.msgs.push({role:'model',parts:[{text:txt}]});}
   }catch(e){
@@ -652,15 +717,22 @@ function showTyping(){
   area.appendChild(d);area.scrollTop=area.scrollHeight;
 }
 function removeTyping(){document.getElementById('typingRow')?.remove();}
+
+// TTS 语音引擎调优：保证切换发音或高频说话时不会卡死发声通道
 function speak(text,btn){
   if(!('speechSynthesis'in window))return;
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=0.88;
-  const v=window.speechSynthesis.getVoices().find(x=>x.lang==='ja-JP'||x.lang==='ja');
-  if(v)u.voice=v;
-  if(btn){btn.classList.add('playing');u.onend=()=>btn.classList.remove('playing');}
-  window.speechSynthesis.speak(u);
+  try {
+    window.speechSynthesis.cancel(); // 注销前一次，刷新声道
+    const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';u.rate=0.88;
+    const v=window.speechSynthesis.getVoices().find(x=>x.lang==='ja-JP'||x.lang==='ja');
+    if(v)u.voice=v;
+    if(btn){btn.classList.add('playing');u.onend=()=>btn.classList.remove('playing');}
+    window.speechSynthesis.speak(u);
+  } catch(e) {
+    console.warn("TTS engine error: ", e);
+  }
 }
+
 function tog(key,el){S.set[key]=!S.set[key];el.classList.toggle('on',S.set[key]);}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function escA(s){return String(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
@@ -669,14 +741,14 @@ async function generateScene(){
   if(S.loading) return;
   const kw=document.getElementById('kwInput').value.trim();if(!kw)return;
   if(!GK){
-    addErrorMsg('APIキーが未設定です', '自由生成场景需要设置 API Key 才能运行。');
+    showToast('APIキー未設定', '自由生成场景需要设置 API Key 才能运行。', 'error');
     return;
   }
   const btn=document.getElementById('genBtn');btn.disabled=true;btn.textContent='生成中…';
   S.loading=true;
   try{
     const prompt = `ユーザーが入力したキーワードに基づいて、日本語会話練習用のクリエイティブなシーンを1つ作成してください。キーワード：${kw}`;
-    const txt = await callAI([{ role: 'user', parts: [{ text: prompt }] }], true);
+    const txt = await callAI([{ role: 'user', parts: [{ text: prompt }] }], 'scene');
     
     const sc = parse(txt);
     sc.id='custom_'+Date.now();ALL[sc.id]=sc;
@@ -687,25 +759,33 @@ async function generateScene(){
     S.loading=false;
     selScene(sc.id);
     document.getElementById('kwInput').value='';
+    showToast('场景创建成功', `已成功为您规划「${sc.name}」对话演练场景！`, 'success');
   }catch(e){
     S.loading=false;
+    showToast('场景生成失败', e.message || '请重试', 'error');
   }
   btn.disabled=false;btn.innerHTML='＋ 生成';
 }
 
 function getLocation(){
-  if(!navigator.geolocation)return;
+  if(!navigator.geolocation) {
+    showToast('定位失败', '您的浏览器不支持 GPS 地理位置获取功能。', 'error');
+    return;
+  }
   const dot=document.getElementById('gdot'),lbl=document.getElementById('geoLbl');
   lbl.textContent='取得中…';
   navigator.geolocation.getCurrentPosition(async pos=>{
     const{latitude:lat,longitude:lng}=pos.coords;
     dot.classList.add('on');lbl.textContent=`${lat.toFixed(3)},${lng.toFixed(3)}`;
-    if(!GK)return;
+    if(!GK) {
+      showToast('定位成功', '位置已获取，但请先在顶部设置 API Key 以推荐场景！', 'info');
+      return;
+    }
     try{
-      const prompt=`根据GPS坐标判断用户可能在什么类型的日本场所，只输出纯JSON：{"placeName":"推测场所名（日语）","sceneId":"conbini/supermart/restaurant/izakaya/cafe/pharmacy/bank/post/hospital/station/taxi/airport/realestate/delivery/interview/office/hotel/shopping/lost/sick/other","hint":"简短说明（中文15字以内）"} 坐标：纬度${lat.toFixed(4)}, 经度${lng.toFixed(4)}，日本`;
-      const r=await fetch(gurl(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.5,maxOutputTokens:256}})});
-      const data=await r.json();
-      const json=JSON.parse((data.candidates?.[0]?.content?.parts?.[0]?.text||'{}').replace(/```json|```/g,'').trim());
+      const prompt=`根据GPS坐标判断用户可能在什么类型的日本场所，只输出纯JSON。坐标：纬度${lat.toFixed(4)}, 经度${lng.toFixed(4)}，日本`;
+      const txt = await callAI([{role:'user', parts:[{text:prompt}]}], 'location');
+      const json = parse(txt);
+      
       document.getElementById('locName').textContent=json.placeName;
       document.getElementById('locHint').textContent=json.hint;
       document.getElementById('locCard').classList.add('show');
@@ -714,8 +794,14 @@ function getLocation(){
         else{document.getElementById('kwInput').value=json.placeName;generateScene();}
         document.getElementById('locCard').classList.remove('show');
       };
-    }catch(e){}
-  },()=>{lbl.textContent='取得失敗';});
+      showToast('定位成功', `推荐练习场景：${json.placeName}`, 'success');
+    }catch(e){
+      showToast('定位解析失败', '无法根据坐标解析推荐场景，请重试。', 'error');
+    }
+  },()=>{
+    lbl.textContent='取得失敗';
+    showToast('定位获取失败', '请确认是否已允许本网页访问您的地理位置授权。', 'error');
+  });
 }
 // INIT
 if('speechSynthesis'in window)window.speechSynthesis.getVoices();
