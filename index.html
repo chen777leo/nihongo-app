@@ -223,12 +223,15 @@ header{display:flex;align-items:center;justify-content:space-between;padding:20p
 </div>
 <script>
 // ── KEY ──
-let GK = localStorage.getItem('gk') || 'AIzaSyB2dUhVd07vleU3weHYZJaCMzhqhpGTvM8';
-function gurl(){ return 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+GK; }
+let GK = localStorage.getItem('gk') || '';
+// 备选模型列表，用于智能兼容各个版本的 API Key
+const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash-preview-09-2025'];
+
+function gurl(model = 'gemini-2.5-flash'){ return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=`+GK; }
 function initKeyUI(){
   const s=document.getElementById('kStatus'), inp=document.getElementById('kInput');
   if(GK){ s.textContent='✅ 已连接'; s.style.color='#1a7a6e'; inp.value=GK.slice(0,8)+'••••••••••••••••••••••••••••'; }
-  else { s.textContent='⚠️ 未设置'; s.style.color='#c0392b'; }
+  else { s.textContent='⚠️ 未设置'; s.style.color='#c0392b'; inp.value=''; }
 }
 function saveKey(){
   const v=document.getElementById('kInput').value.trim();
@@ -251,10 +254,10 @@ const CATS=[
   ]},
   {id:'transport',label:'交通出行',icon:'🚃',scenes:[
     {id:'station',icon:'🚉',name:'駅・切符',sub:'乗り換え・路線案内',av:'駅',role:'駅員',ctx:'乗り換え案内、切符購入、ICカードチャージ、忘れ物'},
-    {id:'taxi',icon:'🚕',name:'タクシー',sub:'行先・料金',av:'車',role:'タクシー運転手',ctx:'行き先を聞く、ルート確認、料金説明、おつり'},
+    {id:'taxi',icon:'🚕',name:'タクシー',sub:'行先・料金',av:'車',role:'タクシー運転手',ctx:'行き先を聞く、ルート确认、料金説明、おつり'},
     {id:'bus',icon:'🚌',name:'バス',sub:'路線・停留所確認',av:'BUS',role:'バス運転手',ctx:'停留所の案内、料金、乗り継ぎの説明'},
-    {id:'airport',icon:'✈️',name:'空港',sub:'チェックイン・案内',av:'空',role:'空港スタッフ',ctx:'チェックイン、手荷物預け、搭乗口案内'},
-    {id:'rental',icon:'🚗',name:'レンタカー',sub:'車の貸出・返却',av:'RC',role:'レンタカー店員',ctx:'車種説明、保険確認、燃料説明、返却手続き'},
+    {id:'airport',icon:'✈️',name:'空港',sub:'チェックイン・案内',av:'空',role:'空港スタッフ',ctx:'チェックイン、手荷物预け、搭乗口案内'},
+    {id:'rental',icon:'🚗',name:'レンタカー',sub:'車の貸出・返却',av:'RC',role:'レンタカー店員',ctx:'車種説明、保险確認、燃料説明、返却手続き'},
   ]},
   {id:'public',label:'公共服务',icon:'🏛️',scenes:[
     {id:'bank',icon:'🏦',name:'銀行',sub:'口座・電話確認',av:'銀',role:'銀行員',ctx:'口座開設、カード申込後の電話確認、在留資格確認'},
@@ -271,7 +274,7 @@ const CATS=[
     {id:'gas',icon:'🔥',name:'ガス・電気',sub:'開栓・契約変更',av:'GS',role:'ガス会社担当',ctx:'開栓工事の説明、料金プラン、引越し時の手続き'},
   ]},
   {id:'work',label:'职场工作',icon:'💼',scenes:[
-    {id:'interview',icon:'🤝',name:'バイト面接',sub:'自己紹介・志望動機',av:'面',role:'カフェの店長',ctx:'アルバイト面接、自己紹介、シフト確認、志望動機'},
+    {id:'interview',icon:'🤝',name:'バイト面接',sub:'自己紹介・志望动機',av:'面',role:'カフェの店长',ctx:'アルバイト面接、自己紹介、シフト確認、志望動機'},
     {id:'fulltime',icon:'👔',name:'就活面接',sub:'新卒・転職面接',av:'就',role:'人事担当者',ctx:'日系企業の正社員面接、志望動機、自己PR、日本語力確認'},
     {id:'office',icon:'💻',name:'オフィス',sub:'同僚・上司との会話',av:'社',role:'日本人の同僚',ctx:'業務の質問、会議の調整、敬語の使い方、飲み会の誘い'},
     {id:'meeting',icon:'📊',name:'会議・報告',sub:'プレゼン・議事録',av:'議',role:'会議の司会',ctx:'会議進行、意見を求める、議事録確認、プレゼン発表'},
@@ -289,25 +292,25 @@ const CATS=[
     {id:'karaoke',icon:'🎤',name:'カラオケ',sub:'部屋・延長・注文',av:'KR',role:'カラオケ店員',ctx:'部屋の予約、延長手続き、フード注文、機器の使い方'},
     {id:'gym',icon:'💪',name:'ジム',sub:'入会・トレーニング',av:'GY',role:'ジムのスタッフ',ctx:'入会手続き、施設説明、トレーニング機器の使い方、月会費'},
     {id:'travel',icon:'🗺️',name:'観光案内',sub:'名所・道案内',av:'観',role:'観光案内スタッフ',ctx:'観光スポット紹介、交通手段、おすすめグルメ'},
-    {id:'shopping',icon:'👗',name:'ショッピング',sub:'試着・サイズ確認',av:'SP',role:'アパレル店員',ctx:'サイズ案内、試着室、在庫確認、セール説明、会員カード'},
+    {id:'shopping',icon:'👗',name:'ショッピング',sub:'試着・サイズ確認',av:'SP',role:'アパレル店员',ctx:'サイズ案内、試着室、在庫確認、セール説明、会員カード'},
     {id:'cinema',icon:'🎬',name:'映画館',sub:'チケット・座席',av:'映',role:'映画館スタッフ',ctx:'チケット購入、座席案内、ポップコーン注文、上映時間'},
   ]},
   {id:'techinterview',label:'⚡ 技術面接',icon:'⚡',scenes:[
-    {id:'ti_general',icon:'🤝',name:'面接・基本',sub:'自己紹介・志望動機',av:'面',_g:'bg',role:'日系メーカーの人事担当者',ctx:'技術系職種の一次面接。自己紹介、技術背景、志望動機、強み弱み、キャリアビジョンを順に質問し深掘りする。重要語彙：志望動機、自己PR、強み、即戦力'},
-    {id:'ti_tech_qa',icon:'💬',name:'技術質疑応答',sub:'プロジェクト経験深掘り',av:'技',_g:'bg',role:'技術部門のシニアエンジニア',ctx:'過去の設計・開発経験をSTARメソッドで深掘りする。「技術的に難しかったプロジェクトは？」「チームでの役割は？」'},
+    {id:'ti_general',icon:'🤝',name:'面接・基本',sub:'自己紹介・志望动機',av:'面',_g:'bg',role:'日系メーカーの人事担当者',ctx:'技術系職種の一次面接。自己紹介、技術背景、志望動機、強み弱み、キャリアビジョンを順に質問し深掘りする。重要語彙：志望動機、自己PR、強み、即戦力'},
+    {id:'ti_tech_qa',icon:'💬',name:'技術質疑応答',sub:'プロジェクト経験深掘り',av:'技',_g:'bg',role:'技術部門 of シニアエンジニア',ctx:'過去の設計・開発経験をSTARメソッドで深掘りする。「技術的に難しかったプロジェクトは？」「チームでの役割は？」'},
     {id:'ti_salary',icon:'💴',name:'条件確認・交渉',sub:'給与・勤務条件',av:'条',_g:'bg',role:'人事担当者（条件面談）',ctx:'内定後の条件面談。給与提示、残業規定、有給、入社日調整。重要語彙：年収、基本給、残業手当、試用期間'},
     {id:'ti_elec_gen',icon:'⚡',name:'電気エンジニア',sub:'回路・制御・シーケンス',av:'電',_g:'be',role:'電気設計部門のリードエンジニア',ctx:'シーケンス制御(PLC・ラダー図)、電気回路設計、制御盤設計、JIS規格図面、安全規格(IEC・CE・UL)を質問する'},
-    {id:'ti_elec_hv',icon:'🔌',name:'高圧・受変電',sub:'高圧設備・変電所',av:'高',_g:'be',role:'高圧電気設備の技術部長',ctx:'高圧受電設備(キュービクル・VCB・変圧器)、保護継電器整定、電気主任技術者資格を確認する。重要語彙：受電、変圧器、遮断器、力率、地絡'},
+    {id:'ti_elec_hv',icon:'🔌',name:'高圧・受変電',sub:'高圧設備・变电所',av:'高',_g:'be',role:'高圧電気設備の技術部長',ctx:'高圧受電設備(キュービクル・VCB・変圧器)、保護継電器整定、電気主任技術者資格を確認する。重要語彙：受電、変圧器、遮断器、力率、地絡'},
     {id:'ti_elec_auto',icon:'🤖',name:'制御・自動化',sub:'PLC・FA・ロボット',av:'FA',_g:'be',role:'FAシステム部門の技術面接官',ctx:'PLC(三菱・OMRON・Siemens)、インバータ、サーボ、産業用ロボット、PROFIBUS・EtherNet/IP通信規格を質問する'},
     {id:'ti_solar',icon:'☀️',name:'太陽光発電',sub:'PV・蓄電・系統連系',av:'PV',_g:'bn',role:'再生可能エネルギー企業の技術面接官',ctx:'PVシステム設計(パワコン・架台・ストリング)、系統連系規程、蓄電池、発電量シミュレーション、O&Mを質問する'},
     {id:'ti_wind',icon:'🌬️',name:'風力・再エネ',sub:'風力発電・電力系統',av:'WT',_g:'bn',role:'エネルギー会社の採用担当エンジニア',ctx:'風力発電機の構造・制御、電力系統連系、エネルギーシミュレーション、洋上風力の特有課題を質問する'},
     {id:'ti_energy_mgr',icon:'🏭',name:'エネルギー管理',sub:'省エネ・BEMS・設備',av:'EM',_g:'bn',role:'エネルギーマネジメント企業の面接官',ctx:'省エネ法・エネルギー管理士、BEMS/FEMS設計、CO2削減計画、電力デマンド管理を質問する'},
-    {id:'ti_battery',icon:'🔋',name:'蓄電池・EV',sub:'リチウム電池・BMS',av:'EV',_g:'bn',role:'EV・蓄電池メーカーの技術面接官',ctx:'リチウムイオン電池の原理・劣化、BMS設計、SOC/SOH推定、EV充電インフラ(CHAdeMO・CCS)、熱管理を質問する'},
+    {id:'ti_battery',icon:'🔋',name:'蓄電池・EV',sub:'リチウム電池・BMS',av:'EV',_g:'bn',role:'EV・蓄電池メーカーの技術面接官',ctx:'リチウムイオン電池の原理・劣化、BMS設計、SOC/SOH推定、EV充电インフラ(CHAdeMO・CCS)、熱管理を質問する'},
     {id:'ti_eplan',icon:'🖥️',name:'EPLAN設計',sub:'EPLAN Electric・回路図',av:'EP',_g:'bs',role:'EPLAN認定エンジニア・電気設計部門の面接官',ctx:'EPLAN Electric P8操作、部品マスタ、PLC設計、自動レポート生成、EPLAN Pro Panel(3Dパネル)を質問する'},
     {id:'ti_autocad',icon:'📐',name:'AutoCAD電気設計',sub:'図面管理・JIS規格',av:'CAD',_g:'bs',role:'設計部門のリーダーエンジニア',ctx:'AutoCAD Electrical操作、JIS規格電気記号、単線図・複線図、図面管理・版数管理を質問する'},
     {id:'ti_spice',icon:'📊',name:'回路シミュレーション',sub:'SPICE・LTspice',av:'SIM',_g:'bs',role:'アナログ回路設計部門の技術面接官',ctx:'LTspice・PSPICEの使用経験、アナログ回路設計、ボード線図を用いた安定性解析を質問する'},
     {id:'ti_scada',icon:'🖥️',name:'SCADA・HMI設計',sub:'監視制御・データ収集',av:'SC',_g:'bs',role:'制御システムインテグレーターの面接官',ctx:'SCADAソフト(Wonderware・iFIX)、HMI画面設計、OPC-UA・Modbus通信、冗長化を質問する'},
-    {id:'ti_bim',icon:'🏗️',name:'BIM・電気設備設計',sub:'Revit MEP・設備BIM',av:'BIM',_g:'bs',role:'設備設計事務所の技術面接官',ctx:'Revit MEP操作、電気設備設計(照明・動力・弱電)、BIM干渉チェック、建築・設備の連携フローを質問する'},
+    {id:'ti_bim',icon:'🏗️',name:'BIM・電気設備設計',sub:'Revit MEP・設備BIM',av:'BIM',_g:'bs',role:'設備設計事務所の技術面接官',ctx:'Revit MEP操作、電気设备設計(照明・動力・弱電)、BIM干渉チェック、建築・設備の連携フローを質問する'},
   ]},
   {id:'emergency',label:'紧急情况',icon:'🆘',scenes:[
     {id:'lost',icon:'🔍',name:'道に迷った',sub:'道案内・Google Map',av:'迷',role:'通りすがりの人',ctx:'道に迷った時の助けを求める、地図を見ながら説明、目印の説明'},
@@ -362,6 +365,7 @@ function renderScenes(){
   }
 }
 function selScene(id){
+  if(S.loading) return; // 频率安全锁：如果正在请求中，禁止频繁切换
   const sc=ALL[id];if(!sc)return;
   S.scene=sc;S.msgs=[];
   renderScenes();
@@ -375,44 +379,207 @@ function clearChat(){
   document.getElementById('qrArea').innerHTML='';
   document.getElementById('vocabPanel').classList.remove('show');
 }
-function resetChat(){if(!S.scene)return;S.msgs=[];clearChat();setTimeout(startConv,200);}
+function resetChat(){if(!S.scene || S.loading)return;S.msgs=[];clearChat();setTimeout(startConv,200);}
+
 function sysP(){
   const sc=S.scene,lv=document.getElementById('lvlSel').value;
-  return `あなたは日本語会話練習AIです。シーン：${sc.name}（${sc.sub}）。役割：${sc.role}。背景：${sc.ctx}。レベル：${lv}。
-毎回の返答は必ず以下のJSON形式のみで出力（他のテキスト一切不可）：
-{"jp":"日本語返答","zh":"中文翻译","romaji":"ローマ字（Hepburn）","words":[{"jp":"単語","reading":"読み","zh":"意味"}],"suggestions":["回答1","回答2","回答3"]}
-wordsは重要語彙を最大4つ。suggestionsは${lv}レベルの自然な返答候補3つ（日本語）。`;
+  return `あなたは日本語会話練習AIです。
+【設定】
+- シーン：${sc.name}（${sc.sub}）
+- 役割：${sc.role}
+- 背景：${sc.ctx}
+- レベル：${lv} （このレベルに適した自然な表現を使って会話を続けてください）
+
+【行動指针】
+必ず指定のJSONスキーマ形式に従い、次の返答を出力してください。重要語彙はwords（最大4つ）に抽出し、返答候補suggestionsは${lv}レベルに適した表現を日本語で3つ作成してください。`;
 }
-async function callAI(msgs){
-  if(!GK){alert('请先设置 API Key！');return null;}
-  const body={
-    system_instruction:{role:'system',parts:[{text:sysP()}]},
-    contents:msgs,
-    generationConfig:{temperature:0.9,topP:0.95,maxOutputTokens:1024}
-  };
-  const r=await fetch(gurl(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok){
-    const err=await r.json().catch(()=>({error:{message:r.status+' '+r.statusText}}));
-    const msg=err?.error?.message||r.statusText;
-    if(r.status===400){alert('API Key 无效或请求格式错误：'+msg);}
-    else if(r.status===403){alert('API Key 权限不足，请检查是否已启用 Gemini API：'+msg);}
-    else if(r.status===429){alert('请求过于频繁，请稍后再试。');}
-    else{alert('API 错误 '+r.status+'：'+msg);}
-    throw new Error(msg);
+
+// ── 智能指数退避重试网络请求封装（Exponential Backoff） ──
+async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
+  try {
+    const response = await fetch(url, options);
+    if (response.ok) return response;
+    
+    // 如果触发 429 频控，或者 5xx 服务端错误，实施指数退避重试
+    if (retries > 0 && (response.status === 429 || response.status >= 500)) {
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return fetchWithRetry(url, options, retries - 1, delay * 2);
+    }
+    return response;
+  } catch (error) {
+    if (retries > 0) {
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return fetchWithRetry(url, options, retries - 1, delay * 2);
+    }
+    throw error;
   }
-  const d=await r.json();
-  if(d.error){alert('Gemini 返回错误：'+d.error.message);throw new Error(d.error.message);}
-  return d.candidates?.[0]?.content?.parts?.[0]?.text||'{}';
 }
+
+// ── 错误展示卡片 ──
+function addErrorMsg(title, detail) {
+  const area = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = 'msg-row ai';
+  d.innerHTML = `
+    <div class="msg-av">⚠️</div>
+    <div class="msg-body">
+      <div class="bubble" style="background: #fdf2f2; border: 1.5px solid #fca5a5; color: #991b1b; border-radius: 4px 14px 14px 14px; padding: 12px 14px; width: 100%;">
+        <div style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">${esc(title)}</div>
+        <div style="font-size: 12px; line-height: 1.5; color: #7f1d1d;">${esc(detail)}</div>
+      </div>
+    </div>
+  `;
+  area.appendChild(d);
+  area.scrollTop = area.scrollHeight;
+}
+
+// ── 核心 API 请求引擎 ──
+async function callAI(msgs, isCustomSceneGen = false){
+  if(!GK){
+    addErrorMsg('APIキーが未設定です', '页面顶部的「GEMINI API KEY」处尚未配置有效的 API Key，请设置并保存后再试。');
+    return null;
+  }
+
+  // 将 Schema 中的类型全部修复为官方标准小写 "object", "string", "array"
+  const chatSchema = {
+    type: "object",
+    properties: {
+      jp: { type: "string", description: "AIの日本語返答" },
+      zh: { type: "string", description: "日本語返答の中国語翻訳" },
+      romaji: { type: "string", description: "日本語のローマ字表記（ヘボン式）" },
+      words: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            jp: { type: "string", description: "単語" },
+            reading: { type: "string", description: "読み方" },
+            zh: { type: "string", description: "意味" }
+          },
+          required: ["jp", "reading", "zh"]
+        }
+      },
+      suggestions: {
+        type: "array",
+        items: { type: "string" },
+        description: "ユーザー向けの自然な返答候補（3つ、日本語のみ）"
+      }
+    },
+    required: ["jp", "zh", "romaji", "words", "suggestions"]
+  };
+
+  const sceneSchema = {
+    type: "object",
+    properties: {
+      id: { type: "string" },
+      icon: { type: "string", description: "絵文字1文字" },
+      name: { type: "string", description: "シーン名（日本語2-5文字）" },
+      sub: { type: "string", description: "サブタイトル（日本語4-8文字）" },
+      av: { type: "string", description: "2文字の略称" },
+      role: { type: "string", description: "AIの役割（日本語）" },
+      ctx: { type: "string", description: "詳細な文脈（日本語）" }
+    },
+    required: ["id", "icon", "name", "sub", "av", "role", "ctx"]
+  };
+
+  const body = {
+    contents: msgs,
+    generationConfig: {
+      temperature: isCustomSceneGen ? 0.75 : 0.85,
+      maxOutputTokens: isCustomSceneGen ? 512 : 1024,
+      responseMimeType: "application/json",
+      responseSchema: isCustomSceneGen ? sceneSchema : chatSchema
+    }
+  };
+
+  if (!isCustomSceneGen) {
+    body.system_instruction = { role: 'system', parts: [{ text: sysP() }] };
+  }
+
+  // 遍历模型列表尝试获取可用响应
+  let lastError = null;
+  for (const model of MODELS) {
+    try {
+      const r = await fetchWithRetry(gurl(model), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      // 如果模型名称不正确导致 404，或者某些旧 API key 返回 400
+      if (r.status === 404) {
+        console.warn(`Model ${model} is not supported. Trying next...`);
+        lastError = `Model ${model} returned 404 (Not Found)`;
+        continue;
+      }
+
+      if(!r.ok){
+        const err = await r.json().catch(() => ({ error: { message: r.status + ' ' + r.statusText } }));
+        const msg = err?.error?.message || r.statusText;
+        
+        // 如果是因为模型不可用、不存在或不支持引起的错误，降级尝试下一个模型
+        if (msg.includes('not found') || msg.includes('Model') || msg.includes('supported') || (r.status === 400 && msg.includes('models/'))) {
+          console.warn(`Model ${model} failed with: ${msg}. Trying next...`);
+          lastError = msg;
+          continue;
+        }
+
+        S.loading = false;
+        removeTyping();
+        document.getElementById('sendBtn').disabled = false;
+        
+        if(r.status === 400) {
+          addErrorMsg('API リクエストエラー', 'API 请求格式错误或 Key 无效（HTTP 400）。请检查你的 API Key 是否有效：' + msg);
+        } else if(r.status === 403) {
+          addErrorMsg('アクセス権限エラー', '权限不足（HTTP 403）。当前 API Key 受限或无效，请更换：' + msg);
+        } else if(r.status === 429) {
+          addErrorMsg('レート制限に達しました', 'API 调用频率超出限制（HTTP 429）。如果使用的是免费 API Key，请等待 1 分钟后重试。');
+        } else {
+          addErrorMsg('API 接続エラー', `连接失败 (HTTP ${r.status})：` + msg);
+        }
+        throw new Error(msg);
+      }
+      
+      const d = await r.json();
+      return d.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    } catch (e) {
+      lastError = e.message;
+      // 如果属于非降级类错误（如断网），直接抛出
+      if (e.message.includes('API') || e.message.includes('Failed to fetch')) {
+        throw e;
+      }
+    }
+  }
+
+  // 所有模型均无法使用
+  S.loading = false;
+  removeTyping();
+  document.getElementById('sendBtn').disabled = false;
+  addErrorMsg('モデルが見つかりません', '尝试了所有推荐的模型（gemini-2.5-flash, gemini-2.0-flash, gemini-1.5-flash）均未在您的API Key下找到。请确认您的Key已启用且有效。最近一次错误：' + lastError);
+  throw new Error('No available models found: ' + lastError);
+}
+
 async function startConv(){
   if(!S.scene)return;
   S.loading=true;showTyping();
+  
+  if(!GK){
+    removeTyping();
+    S.loading=false;
+    addErrorMsg('APIキーが未設定です', '页面顶部的「GEMINI API KEY」处尚未配置有效的 API Key，请设置并保存后再试。');
+    return;
+  }
+
   try{
     const txt=await callAI([{role:'user',parts:[{text:'会話を始めてください。役になりきって最初の声かけをしてください。'}]}]);
     removeTyping();S.loading=false;
     if(txt){const d=parse(txt);addAI(d);S.msgs.push({role:'model',parts:[{text:txt}]});}
-  }catch(e){removeTyping();S.loading=false;addAI({jp:'エラーが発生しました。もう一度お試しください。',zh:'发生错误，请重试。',romaji:'',words:[],suggestions:[]});}
+  }catch(e){
+    removeTyping();S.loading=false;
+    console.error(e);
+  }
 }
+
 async function sendMsg(){
   if(S.loading||!S.scene)return;
   const ta=document.getElementById('userInput');
@@ -421,19 +588,38 @@ async function sendMsg(){
   document.getElementById('qrArea').innerHTML='';
   addUser(text);S.msgs.push({role:'user',parts:[{text}]});
   S.loading=true;document.getElementById('sendBtn').disabled=true;showTyping();
+
+  if(!GK){
+    removeTyping();
+    S.loading=false;
+    document.getElementById('sendBtn').disabled=false;
+    addErrorMsg('APIキーが未設定です', '请在页面顶部的输入框中配置您的 API Key。');
+    return;
+  }
+
   try{
-    // Gemini requires alternating user/model and must start with user
     const hist=S.msgs.slice(-14);
-    // Ensure starts with user role
     let start=0;
     while(start<hist.length&&hist[start].role!=='user')start++;
     const validHist=hist.slice(start);
     const txt=await callAI(validHist);
     removeTyping();S.loading=false;document.getElementById('sendBtn').disabled=false;
     if(txt){const d=parse(txt);addAI(d);S.msgs.push({role:'model',parts:[{text:txt}]});}
-  }catch(e){removeTyping();S.loading=false;document.getElementById('sendBtn').disabled=false;addAI({jp:'エラーが発生しました',zh:'网络错误，请重试',romaji:'',words:[],suggestions:[]});}
+  }catch(e){
+    removeTyping();S.loading=false;document.getElementById('sendBtn').disabled=false;
+    console.error(e);
+  }
 }
-function parse(txt){try{return JSON.parse(txt.replace(/```json|```/g,'').trim());}catch(e){return{jp:txt,zh:'',romaji:'',words:[],suggestions:[]};}}
+
+function parse(txt){
+  try{
+    return JSON.parse(txt.trim());
+  }catch(e){
+    console.error("JSON 解析错误，返回原始文本：", txt);
+    return {jp:txt,zh:'',romaji:'',words:[],suggestions:[]};
+  }
+}
+
 function addAI(d){
   const area=document.getElementById('msgs'),av=S.scene?.av||'AI';
   const row=document.createElement('div');row.className='msg-row ai';
@@ -478,27 +664,35 @@ function speak(text,btn){
 function tog(key,el){S.set[key]=!S.set[key];el.classList.toggle('on',S.set[key]);}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function escA(s){return String(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+
 async function generateScene(){
+  if(S.loading) return;
   const kw=document.getElementById('kwInput').value.trim();if(!kw)return;
-  if(!GK){alert('请先设置 API Key！');return;}
+  if(!GK){
+    addErrorMsg('APIキーが未設定です', '自由生成场景需要设置 API Key 才能运行。');
+    return;
+  }
   const btn=document.getElementById('genBtn');btn.disabled=true;btn.textContent='生成中…';
+  S.loading=true;
   try{
-    const prompt=`根据关键词生成一个日语对话练习场景的JSON，只输出纯JSON不要任何其他内容：{"id":"custom","icon":"单个emoji","name":"场景名（日语2-5字）","sub":"副标题（日语4-8字）","av":"2字缩写","role":"AI角色（日语）","ctx":"详细背景（日语）"} 关键词：${kw}`;
-    const r=await fetch(gurl(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.8,maxOutputTokens:512}})});
-    if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err?.error?.message||r.status);}
-    const data=await r.json();
-    if(data.error)throw new Error(data.error.message);
-    const txt=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    const sc=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    const prompt = `ユーザーが入力したキーワードに基づいて、日本語会話練習用のクリエイティブなシーンを1つ作成してください。キーワード：${kw}`;
+    const txt = await callAI([{ role: 'user', parts: [{ text: prompt }] }], true);
+    
+    const sc = parse(txt);
     sc.id='custom_'+Date.now();ALL[sc.id]=sc;
     let cc=CATS.find(c=>c.id==='_custom');
     if(!cc){cc={id:'_custom',label:'自定义',icon:'✨',scenes:[]};CATS.unshift(cc);}
     cc.scenes.unshift(sc);S.cat='_custom';
-    renderCats();renderScenes();selScene(sc.id);
+    renderCats();renderScenes();
+    S.loading=false;
+    selScene(sc.id);
     document.getElementById('kwInput').value='';
-  }catch(e){alert('生成失败：'+(e.message||'请重试'));}
+  }catch(e){
+    S.loading=false;
+  }
   btn.disabled=false;btn.innerHTML='＋ 生成';
 }
+
 function getLocation(){
   if(!navigator.geolocation)return;
   const dot=document.getElementById('gdot'),lbl=document.getElementById('geoLbl');
