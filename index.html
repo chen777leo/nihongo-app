@@ -408,7 +408,69 @@ header {
 </div><!-- /wrap -->
 
 <script>
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDiEtitDzx3Dgi5bHNtlewJULhLv50iViU';
+// Encrypted API Key — password required to unlock
+const _EK = 'q7Hn1kP9MqkLL2KO8SbLMNirqcNfHUZUJnQRkfSd6z+kz8rgZvQx';
+const _PH = 'eaf89db7108470dc3f6b23ea90618264b3e8f8b6145371667c4055e9c5ce9f52';
+let GEMINI_KEY = '';
+
+function getGeminiURL() {
+  return 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_KEY;
+}
+
+async function sha256hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function decryptKey(pwd) {
+  const hash = await sha256hex(pwd);
+  if (hash !== _PH) return null;
+  const hashBytes = Uint8Array.from(atob(await (async()=>{
+    const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pwd));
+    return btoa(String.fromCharCode(...new Uint8Array(b)));
+  })()), c => c.charCodeAt(0));
+  const enc = Uint8Array.from(atob(_EK), c => c.charCodeAt(0));
+  const dec = enc.map((b, i) => b ^ hashBytes[i % hashBytes.length]);
+  return new TextDecoder().decode(dec);
+}
+
+function checkKey() {
+  const saved = sessionStorage.getItem('gk_unlocked');
+  if (saved) { GEMINI_KEY = saved; return true; }
+  return false;
+}
+function promptKey() {
+  return new Promise(resolve => {
+    document.getElementById('keyModal').style.display = 'flex';
+    setTimeout(() => document.getElementById('keyInp').focus(), 100);
+    document.getElementById('keyOk').onclick = async () => {
+      const pwd = document.getElementById('keyInp').value.trim();
+      document.getElementById('keyOk').textContent = '验证中…';
+      document.getElementById('keyOk').disabled = true;
+      const decrypted = await decryptKey(pwd);
+      if (decrypted) {
+        GEMINI_KEY = decrypted;
+        sessionStorage.setItem('gk_unlocked', decrypted);
+        document.getElementById('keyModal').style.display = 'none';
+        resolve(true);
+      } else {
+        document.getElementById('keyErr').style.display = 'block';
+        document.getElementById('keyOk').textContent = '开始练习 →';
+        document.getElementById('keyOk').disabled = false;
+        document.getElementById('keyInp').value = '';
+        document.getElementById('keyInp').focus();
+      }
+    };
+    document.getElementById('keyInp').onkeydown = e => {
+      if (e.key === 'Enter') document.getElementById('keyOk').click();
+    };
+  });
+}
+async function ensureKey() {
+  if (GEMINI_KEY) return true;
+  if (checkKey()) return true;
+  return await promptKey();
+}
 
 // ── SCENE DATA ──
 const CATEGORIES = [
@@ -709,7 +771,8 @@ async function generateScene() {
   btn.disabled = true; btn.textContent = '生成中…';
   try {
     const prompt = `根据关键词生成一个日语对话练习场景的JSON，只输出纯JSON，不要markdown代码块，不要任何其他文字。格式：{"id":"custom","icon":"单个emoji","name":"场景名（日语2-5字）","sub":"副标题（日语，4-8字）","av":"2字缩写","role":"AI角色（日语）","ctx":"详细背景（日语，描述如何扮演这个角色）"} 关键词：${kw}`;
-    const res = await fetch(GEMINI_URL, {
+    if (!await ensureKey()) return;
+    const res = await fetch(getGeminiURL(), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
@@ -753,7 +816,8 @@ function getLocation() {
     label.textContent = `${lat.toFixed(3)},${lng.toFixed(3)}`;
     try {
       const prompt = `根据GPS坐标判断用户可能在什么类型的日本场所，只输出纯JSON不要任何其他内容：{"placeName":"推测场所名（日语）","sceneId":"从以下选一个：conbini/supermart/restaurant/izakaya/cafe/pharmacy/bank/post/hospital/cityhall/station/taxi/airport/realestate/delivery/interview/office/hotel/shopping/lost/sick/other","hint":"简短说明（中文15字以内）"} 坐标：纬度${lat.toFixed(4)}, 经度${lng.toFixed(4)}，日本`;
-      const res = await fetch(GEMINI_URL, {
+      if (!await ensureKey()) return;
+    const res = await fetch(getGeminiURL(), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
       });
@@ -814,7 +878,8 @@ async function startConv() {
   S.loading = true;
   showTyping();
   try {
-    const res = await fetch(GEMINI_URL, {
+    if (!await ensureKey()) return;
+    const res = await fetch(getGeminiURL(), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         system_instruction: { parts: [{ text: sysPrompt() }] },
@@ -847,7 +912,8 @@ async function sendMsg() {
   try {
     const history = S.msgs.slice(-14);
     if (history[0]?.role !== 'user') history.unshift({ role: 'user', parts: [{ text: '会話を始めてください。' }] });
-    const res = await fetch(GEMINI_URL, {
+    if (!await ensureKey()) return;
+    const res = await fetch(getGeminiURL(), {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         system_instruction: { parts: [{ text: sysPrompt() }] },
@@ -960,9 +1026,56 @@ function escAttr(s) { return String(s||'').replace(/'/g,"\\'").replace(/"/g,'&qu
 function autoResize(el) { el.style.height='40px'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
 
 // ── INIT ──
+
+// Auto show password modal on load
+window.addEventListener('load', () => {
+  const saved = sessionStorage.getItem('gk_unlocked');
+  if (saved) {
+    GEMINI_KEY = saved;
+  } else {
+    document.getElementById('keyModal').style.display = 'flex';
+    setTimeout(() => document.getElementById('keyInp').focus(), 100);
+    document.getElementById('keyOk').onclick = async () => {
+      const pwd = document.getElementById('keyInp').value.trim();
+      document.getElementById('keyOk').textContent = '验证中…';
+      document.getElementById('keyOk').disabled = true;
+      const decrypted = await decryptKey(pwd);
+      if (decrypted) {
+        GEMINI_KEY = decrypted;
+        sessionStorage.setItem('gk_unlocked', decrypted);
+        document.getElementById('keyModal').style.display = 'none';
+      } else {
+        document.getElementById('keyErr').style.display = 'block';
+        document.getElementById('keyOk').textContent = '开始练习 →';
+        document.getElementById('keyOk').disabled = false;
+        document.getElementById('keyInp').value = '';
+        document.getElementById('keyInp').focus();
+      }
+    };
+    document.getElementById('keyInp').onkeydown = e => {
+      if (e.key === 'Enter') document.getElementById('keyOk').click();
+    };
+  }
+});
+
 if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
 renderCats();
 renderScenes();
 </script>
+
+<!-- PASSWORD MODAL -->
+<div id="keyModal" style="display:none;position:fixed;inset:0;background:rgba(26,26,46,0.7);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:#f7f4ef;border-radius:20px;padding:36px 30px;max-width:380px;width:90%;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:40px;margin-bottom:10px;">🇯🇵</div>
+      <div style="font-size:20px;font-weight:700;color:#1a1a2e;">日本語会話 AI</div>
+      <div style="font-size:13px;color:#7a7a8c;margin-top:4px;">请输入访问密码</div>
+    </div>
+    <input id="keyInp" type="password" placeholder="密码" style="width:100%;height:46px;border-radius:12px;border:1.5px solid rgba(26,26,46,0.15);padding:0 16px;font-size:16px;background:#fff;color:#1a1a2e;box-sizing:border-box;margin-bottom:8px;text-align:center;letter-spacing:0.2em;" />
+    <div id="keyErr" style="display:none;font-size:12px;color:#c0392b;margin-bottom:10px;text-align:center;">❌ 密码错误，请重试</div>
+    <button id="keyOk" style="width:100%;height:46px;background:#1a1a2e;color:#f7f4ef;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity 0.2s;">开始练习 →</button>
+    <div style="font-size:11px;color:#bbb;margin-top:14px;text-align:center;">密码本次会话有效，关闭页面后需重新输入</div>
+  </div>
+</div>
 </body>
 </html>
